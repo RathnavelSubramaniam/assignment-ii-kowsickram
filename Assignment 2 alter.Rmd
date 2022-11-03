@@ -1,0 +1,50 @@
+---
+title: "Assignment 2."
+author: "Kowsick Ram"
+date: "2022-11-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1.	Sort flights to find the fastest flights
+```{r}
+arrange(flights,arr_time)
+```
+2.	Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
+```{r}
+select(flights,dep_time,shed_dep_time,dep_delay)
+```
+3.	Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:
+a.	A flight is 15 minutes early 50% of the time, and 15 minutes late 50% of the time.
+b.	A flight is always 10 minutes late.
+c.	A flight is 30 minutes early 50% of the time, and 30 minutes late 50% of the time.
+d.	99% of the time a flight is on time. 1% of the time it’s 2 hours late.
+```{r}
+str(flights)
+head(flights)
+flight_delay_summary <- group_by(flights, flight) %>% summarise(num_flights = n(),
+                                                                percentage_on_time = sum(arr_time == sched_arr_time)/num_flights,
+                                                                percentage_early = sum(arr_time < sched_arr_time)/num_flights, 
+                                                                percentage_15_mins_early = sum(sched_arr_time - arr_time == 15)/num_flights,
+                                                                percentage_late = sum(arr_time > sched_arr_time)/num_flights,
+                                                                percentage_15_mins_late = sum(arr_time - sched_arr_time == 15)/num_flights,
+                                                                percentage_2_hours_late = sum(arr_time - sched_arr_time == 120)/num_flights)
+
+```
+4.	Which plane (tailnum) has the worst on-time record?
+```{r}
+arrange(flights,desc(arr_delay),desc(dep_delay))
+```
+5.	Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.
+```{r}
+select(flights,dep_time,dep_delay,arr_time,arr_delay)
+select(flights,4,6,7,9)
+select(flights,starts_with("dep"),starts_with("arr_"))
+select(flights,ends_with("_time"),ends_with("_delay"))
+c(shed_arr_time,sched_dep_time,air_time)
+```
+
+
